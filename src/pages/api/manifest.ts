@@ -19,7 +19,7 @@ export default createManifestHandler({
     const apiBaseURL = process.env.APP_API_BASE_URL ?? appBaseUrl;
 
     const manifest: AppManifest = {
-      name: 'Saleor App Template',
+      name: 'EasyPaisa',
       tokenTargetUrl: `${apiBaseURL}/api/register`,
       appUrl: iframeBaseUrl,
       /**
@@ -31,7 +31,7 @@ export default createManifestHandler({
          * Add permission to allow "ORDER_CREATED" webhook registration.
          *
          * This can be removed
-         */
+         */"HANDLE_PAYMENTS",
         "MANAGE_ORDERS",
       ],
       id: "saleor.app",

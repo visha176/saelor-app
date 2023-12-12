@@ -1,14 +1,16 @@
+// src/pages/order-example.tsx
+import JazzcashService from 'C:/Users/shiek/Desktop/saleor dashboard/my-easypaisa-app/src/lib/jazzcash-service';
 import { actions, useAppBridge } from "@saleor/app-sdk/app-bridge";
 import { Box, Text } from "@saleor/macaw-ui";
 import gql from "graphql-tag";
 import Link from "next/link";
 import { useLastOrderQuery } from "../generated/graphql";
 
-/**
- * GraphQL Code Generator scans for gql tags and generates types based on them.
- * The below query is used to generate the "useLastOrderQuery" hook.
- * If you modify it, make sure to run "pnpm codegen" to regenerate the types.
- */
+interface SaleorOrder {
+  id: string;
+  // Other order properties...
+}
+
 gql`
   query LastOrder {
     orders(first: 1) {
@@ -55,8 +57,6 @@ function generateNumberOfLinesText(lines: any[]) {
 
 export const OrderExample = () => {
   const { appBridge } = useAppBridge();
-
-  // Using the generated hook
   const [{ data, fetching }] = useLastOrderQuery();
   const lastOrder = data?.orders?.edges[0]?.node;
 
@@ -66,6 +66,20 @@ export const OrderExample = () => {
         to: `/orders/${id}`,
       })
     );
+  };
+
+  const order: SaleorOrder = {
+    id: '123', // Sample order ID
+    // Other order properties...
+  };
+
+  const initiateJazzCashPayment = async () => {
+    try {
+      await JazzcashService.initiatePayment(order);
+      // Redirect or handle the next steps after successful payment initiation
+    } catch (error) {
+      console.error('JazzCash payment initiation error:', error);
+    }
   };
 
   return (
@@ -104,6 +118,7 @@ export const OrderExample = () => {
                   <Text>{`Ships to ${lastOrder.shippingAddress?.country.country} 📦`}</Text>
                 </li>
               </ul>
+              <button onClick={initiateJazzCashPayment}>Initiate JazzCash Payment</button>
               <Link onClick={() => navigateToOrder(lastOrder.id)} href={`/orders/${lastOrder.id}`}>
                 See the order details →
               </Link>
@@ -115,3 +130,4 @@ export const OrderExample = () => {
     </Box>
   );
 };
+
